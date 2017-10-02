@@ -1,0 +1,81 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json",
+    "handler": "Microsoft.Compute.MultiVm",
+    "version": "0.1.2-preview",
+    "parameters": {
+       "basics": [ 
+           {
+               "name" : "clusterName",
+               "type" : "Microsoft.Common.TextBox",
+               "label" : "McAfee ATD Cluster Name",
+               "defaultValue" : "McAfee ATD Default Cluster",
+               "toolTip" : "This will be used to name the ATD cluster",
+               "constraints" : {
+                   "required" : true,
+                   "regex" : "^[a-z0-9]{3,24}$",
+                   "validationMessage" : "Cluster names must be between 3 and 24 characters long, and can contain only numbers and lowercase letters."
+               },
+               "options" : {}
+           }
+       ],
+       "steps": [
+           {
+               "name":"clusterConfig",
+               "label":"Cluster Settings",
+               "subLabel": {
+                   "preValidation": "Configure the cluster",
+                   "postValidation": "Done"
+               },
+               "bladeTitle": "McAfee ATD Cluster Settings",
+               "elements": [
+                   {
+                        "name": "clusterNodeCount",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Cluster Size",
+                        "defaultValue": "1",
+                        "toolTip": "The number of virtual machines (nodes) to provision for the cluster.",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "Small",
+                                    "value": 1
+                                },
+                                {
+                                    "label": "Medium",
+                                    "value": 2
+                                },
+                                {
+                                    "label": "Large",
+                                    "value": 4
+                                },
+                                {
+                                    "label": "X-Large",
+                                    "value": 8
+                                }
+                            ]
+                        }
+                   },
+                   {
+                       "name": "clusterVMSize",
+                       "type": "Microsoft.Compute.SizeSelector",
+                       "label": "Virtual Machine Size",
+                       "toolTip": "The size of virtual machine to provision for each cluster node.",
+                       "recommendedSizes": [
+                           "Standard_D16s_v3"
+                       ],
+                       "constraints":{
+                           "allowedSizes": [
+                               "Standard_D16s_v3"
+                           ]
+                       }
+
+                   }
+               ]
+           }
+        ],
+       "outputs": {
+           "clusterName": "[basics('clusterName')]",
+           "clusterNodeCount":"[steps('clusterConfig').clusterNodeCount]"
+        }
+    }
+ }
